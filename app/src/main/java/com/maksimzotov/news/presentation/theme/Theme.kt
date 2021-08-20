@@ -1,4 +1,4 @@
-package com.maksimzotov.news.ui.theme
+package com.maksimzotov.news.presentation.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme

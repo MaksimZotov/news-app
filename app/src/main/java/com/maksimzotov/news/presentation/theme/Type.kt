@@ -1,4 +1,4 @@
-package com.maksimzotov.news.ui.theme
+package com.maksimzotov.news.presentation.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
