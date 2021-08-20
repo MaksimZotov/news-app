@@ -1,19 +1,18 @@
-package com.maksimzotov.news.di.data
+package com.maksimzotov.news.di.data.android
 
 import android.content.Context
 import androidx.room.Room
 import com.maksimzotov.news.data.android.AndroidSettingsConstants
 import com.maksimzotov.news.data.android.AndroidSettingsDao
 import com.maksimzotov.news.data.android.AndroidSettingsDatabase
-import com.maksimzotov.news.data.android.AndroidSettingsRepository
-import com.maksimzotov.news.di.ApplicationMain
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
-@InstallIn(ApplicationMain::class)
+@InstallIn(SingletonComponent::class)
 class AndroidModule {
 
     @Provides

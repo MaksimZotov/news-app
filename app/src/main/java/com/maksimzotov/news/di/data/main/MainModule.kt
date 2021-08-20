@@ -1,34 +1,26 @@
-package com.maksimzotov.news.di.data
+package com.maksimzotov.news.di.data.main
 
 import android.content.Context
 import androidx.room.Room
 import com.google.gson.GsonBuilder
-import com.maksimzotov.news.data.main.RepositoryImpl
 import com.maksimzotov.news.data.main.retrofit.NewsApi
 import com.maksimzotov.news.data.main.retrofit.RetrofitConstants
 import com.maksimzotov.news.data.main.retrofit.deserializers.NewsDeserializer
 import com.maksimzotov.news.data.main.room.MainDao
 import com.maksimzotov.news.data.main.room.MainDatabase
 import com.maksimzotov.news.data.main.room.RoomConstants
-import com.maksimzotov.news.di.ApplicationMain
-import com.maksimzotov.news.domain.Repository
 import com.maksimzotov.news.domain.entities.NewsItem
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
-@InstallIn(ApplicationMain::class)
-abstract class MainModule {
-
-    @Binds
-    abstract fun bindRepositoryImplToRepository(
-        repositoryImpl: RepositoryImpl
-    ): Repository
+@InstallIn(SingletonComponent::class)
+class MainModule {
 
     @Provides
     @Singleton
