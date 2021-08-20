@@ -2,8 +2,9 @@ package com.maksimzotov.news.domain.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.maksimzotov.news.data.main.room.domain.MainTableNames
 
-@Entity
+@Entity(tableName = MainTableNames.FAVORITES)
 data class NewsItem(
     val title: String,
     val urlToImage: String,
