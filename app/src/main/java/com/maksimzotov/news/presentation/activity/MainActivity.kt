@@ -11,6 +11,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.maksimzotov.news.presentation.entities.NavigationItem
+import com.maksimzotov.news.presentation.screens.favorites.Favorites
+import com.maksimzotov.news.presentation.screens.home.Home
+import com.maksimzotov.news.presentation.screens.info.Info
 import com.maksimzotov.news.presentation.theme.NewsTheme
 
 class MainActivity : ComponentActivity() {
@@ -63,9 +66,9 @@ fun Activity() {
                 navController = navController,
                 startDestination = NavigationItem.Home.route
             ) {
-                bottomItems.forEach { item ->
-                    composable(item.route) { Text(item.title)}
-                }
+                composable(NavigationItem.Home.route) { Home() }
+                composable(NavigationItem.Favorites.route) { Favorites() }
+                composable(NavigationItem.Info.route) { Info() }
             }
         }
     }
