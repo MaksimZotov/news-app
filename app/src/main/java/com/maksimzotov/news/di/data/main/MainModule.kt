@@ -13,6 +13,7 @@ import com.maksimzotov.news.domain.entities.NewsItem
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -32,7 +33,9 @@ class MainModule {
 
     @Provides
     @Singleton
-    fun provideMainDatabase(context: Context): MainDatabase {
+    fun provideMainDatabase(
+        @ApplicationContext context: Context
+    ): MainDatabase {
         return Room.databaseBuilder(
             context.applicationContext,
             MainDatabase::class.java,
