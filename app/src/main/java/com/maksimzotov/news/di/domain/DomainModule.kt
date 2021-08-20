@@ -1,4 +1,4 @@
-package com.maksimzotov.news.di.data.domain
+package com.maksimzotov.news.di.domain
 
 import dagger.Module
 import dagger.Provides
