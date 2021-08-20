@@ -18,18 +18,6 @@ class RepositoryImpl @Inject constructor(
     override suspend fun getNews(): Response<List<NewsItem>> =
         newsApi.getNews()
 
-    override suspend fun getSportsNews(): Response<List<NewsItem>> =
-        newsApi.getSportsNews()
-
-    override suspend fun getHealthNews(): Response<List<NewsItem>> =
-        newsApi.getHealthNews()
-
-    override suspend fun getScienceNews(): Response<List<NewsItem>> =
-        newsApi.getScienceNews()
-
-    override suspend fun getTechnologyNews(): Response<List<NewsItem>> =
-        newsApi.getTechnologyNews()
-
 
     override fun getFavoriteNews(): Flow<List<NewsItem>?> =
         mainDao.getFavoriteNews()
