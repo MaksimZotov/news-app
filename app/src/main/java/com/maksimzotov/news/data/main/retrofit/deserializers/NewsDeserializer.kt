@@ -29,8 +29,9 @@ class NewsDeserializer @Inject constructor() : JsonDeserializer<NewsWrapper> {
         articles.forEach { article ->
             val jsonObject = article.asJsonObject
             val title = jsonObject.get("title").toString().trim('\"')
+            val url = jsonObject.get("url").toString().trim('\"')
             val urlToImage = jsonObject.get("urlToImage").toString().trim('\"')
-            news.add(NewsItem(title, urlToImage))
+            news.add(NewsItem(title, url, urlToImage))
         }
 
         return NewsWrapper(news)

@@ -19,11 +19,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.core.os.bundleOf
+import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.maksimzotov.news.domain.entities.NewsItem
 
 @Composable
-fun Home(viewModel: HomeViewModel) {
+fun Home(
+    viewModel: HomeViewModel,
+    navController: NavController
+) {
     val news by viewModel.news.observeAsState()
 
     Column {
@@ -39,7 +44,7 @@ fun Home(viewModel: HomeViewModel) {
                 val newsList = newsWrapper.news
                 LazyColumn {
                     items(newsList) { newsItem ->
-                        NewsItem(newsItem)
+                        NewsItem(newsItem, navController)
                     }
                 }
             }
@@ -48,8 +53,18 @@ fun Home(viewModel: HomeViewModel) {
 }
 
 @Composable
-fun NewsItem(newsItem: NewsItem) {
-    Surface {
+fun NewsItem(newsItem: NewsItem, navController: NavController) {
+    Surface(
+        modifier = Modifier.clickable {
+            navController.also { nc ->
+                nc.currentBackStackEntry?.arguments =
+                    (nc.currentBackStackEntry?.arguments ?: bundleOf()).apply {
+                        putAll(bundleOf("url" to newsItem.url))
+                    }
+                nc.navigate("web_page")
+            }
+        }
+    ) {
         Row(modifier = Modifier.padding(all = 8.dp)) {
             Image(
                 painter = rememberImagePainter(

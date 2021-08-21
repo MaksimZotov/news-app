@@ -1,12 +1,16 @@
 package com.maksimzotov.news.presentation.activity
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -73,10 +77,15 @@ fun Activity() {
             ) {
                 composable(NavigationItem.Home.route) {
                     val homeViewModel: HomeViewModel = hiltViewModel()
-                    Home(homeViewModel)
+                    Home(homeViewModel, navController)
                 }
                 composable(NavigationItem.Favorites.route) { Favorites() }
                 composable(NavigationItem.Info.route) { Info() }
+                composable("web_page") {
+                    navController.previousBackStackEntry?.arguments?.getString("url")?.let {
+                        WebPageScreen(it)
+                    }
+                }
             }
         }
     }
@@ -87,5 +96,17 @@ fun Activity() {
 fun Preview() {
     NewsTheme {
         Activity()
+    }
+}
+
+@SuppressLint("SetJavaScriptEnabled")
+@Composable
+fun WebPageScreen(urlToRender: String) {
+    AndroidView(factory = ::WebView) { webView ->
+        with(webView) {
+            settings.javaScriptEnabled = true
+            webViewClient = WebViewClient()
+            loadUrl(urlToRender)
+        }
     }
 }
