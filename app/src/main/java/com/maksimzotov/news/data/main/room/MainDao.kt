@@ -8,10 +8,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface MainDao {
 
-    @Query("SELECT * FROM ${MainTableNames.FAVORITES} ORDER BY id ASC")
+    @Query("SELECT * FROM ${MainTableNames.FAVORITES} ORDER BY url ASC")
     fun getFavoriteNews(): Flow<List<NewsItem>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun addNewsItemToFavorites(newsItem: NewsItem)
 
     @Delete

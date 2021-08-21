@@ -17,9 +17,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.maksimzotov.news.presentation.entities.NavigationItem
 import com.maksimzotov.news.presentation.screens.favorites.Favorites
+import com.maksimzotov.news.presentation.screens.favorites.FavoritesViewModel
 import com.maksimzotov.news.presentation.screens.home.Home
 import com.maksimzotov.news.presentation.screens.home.HomeViewModel
 import com.maksimzotov.news.presentation.screens.info.Info
+import com.maksimzotov.news.presentation.screens.info.InfoViewModel
 import com.maksimzotov.news.presentation.theme.NewsTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -79,7 +81,10 @@ fun Activity() {
                     val homeViewModel: HomeViewModel = hiltViewModel()
                     Home(homeViewModel, navController)
                 }
-                composable(NavigationItem.Favorites.route) { Favorites() }
+                composable(NavigationItem.Favorites.route) {
+                    val favoritesViewModel: FavoritesViewModel = hiltViewModel()
+                    Favorites(favoritesViewModel, navController)
+                }
                 composable(NavigationItem.Info.route) { Info() }
                 composable("web_page") {
                     navController.previousBackStackEntry?.arguments?.getString("url")?.let {

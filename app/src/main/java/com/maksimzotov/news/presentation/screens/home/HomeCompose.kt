@@ -8,21 +8,23 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.maksimzotov.news.domain.entities.NewsItem
+import com.maksimzotov.news.presentation.screens.favorites.FavoritesViewModel
 
 @Composable
 fun Home(
@@ -44,7 +46,11 @@ fun Home(
                 val newsList = newsWrapper.news
                 LazyColumn {
                     items(newsList) { newsItem ->
-                        NewsItem(newsItem, navController)
+                        NewsItemCompose(
+                            newsItem,
+                            viewModel,
+                            navController
+                        )
                     }
                 }
             }
@@ -53,34 +59,45 @@ fun Home(
 }
 
 @Composable
-fun NewsItem(newsItem: NewsItem, navController: NavController) {
+fun NewsItemCompose(
+    newsItem: NewsItem,
+    viewModel: ViewModel,
+    navController: NavController
+) {
     Surface(
-        modifier = Modifier.clickable {
-            navController.also { nc ->
-                nc.currentBackStackEntry?.arguments =
-                    (nc.currentBackStackEntry?.arguments ?: bundleOf()).apply {
-                        putAll(bundleOf("url" to newsItem.url))
-                    }
-                nc.navigate("web_page")
+        modifier = Modifier
+            .padding(6.dp)
+            .clickable {
+                navController.also { nc ->
+                    nc.currentBackStackEntry?.arguments =
+                        (nc.currentBackStackEntry?.arguments ?: bundleOf()).apply {
+                            putAll(bundleOf("url" to newsItem.url))
+                        }
+                    nc.navigate("web_page")
+                }
             }
-        }
+            .border(1.dp, MaterialTheme.colors.primary, MaterialTheme.shapes.small)
     ) {
-        Row(modifier = Modifier.padding(all = 8.dp)) {
+        Column(
+            modifier = Modifier.padding(all = 8.dp)
+        ) {
             Image(
                 painter = rememberImagePainter(
                     data = newsItem.urlToImage,
                     builder = {
                         crossfade(true)
                         crossfade(1000)
-                    }
+                    },
                 ),
                 contentDescription = null,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .border(1.5.dp, MaterialTheme.colors.secondary, CircleShape)
+                    .fillMaxWidth(1f)
+                    .height(152.dp)
+                    .border(1.5.dp, MaterialTheme.colors.secondary, MaterialTheme.shapes.large)
+
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             var isExpanded by remember { mutableStateOf(false) }
 
@@ -106,6 +123,25 @@ fun NewsItem(newsItem: NewsItem, navController: NavController) {
                         style = MaterialTheme.typography.body2
                     )
                 }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Button(
+                onClick = {
+                    when(viewModel) {
+                        is HomeViewModel -> viewModel.addToFavorites(newsItem)
+                        is FavoritesViewModel -> viewModel.removeFromFavorites(newsItem)
+                    }
+                },
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                val text = when (viewModel) {
+                    is HomeViewModel -> "Add"
+                    is FavoritesViewModel -> "Remove"
+                    else -> "Oops!"
+                }
+                Text(text)
             }
         }
     }
