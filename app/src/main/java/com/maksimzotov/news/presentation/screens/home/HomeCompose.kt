@@ -137,7 +137,14 @@ fun NewsItemCompose(
                     .align(Alignment.CenterHorizontally)
             ) {
                 val text = when (viewModel) {
-                    is HomeViewModel -> "Add"
+                    is HomeViewModel -> {
+                        val favorites by viewModel.favorites.observeAsState()
+                        if (favorites?.contains(newsItem) == true) {
+                            "Added"
+                        } else {
+                            "Add"
+                        }
+                    }
                     is FavoritesViewModel -> "Remove"
                     else -> "Oops!"
                 }
