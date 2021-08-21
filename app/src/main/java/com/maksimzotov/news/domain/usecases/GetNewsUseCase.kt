@@ -1,7 +1,7 @@
 package com.maksimzotov.news.domain.usecases
 
 import com.maksimzotov.news.domain.Repository
-import com.maksimzotov.news.domain.entities.NewsItem
+import com.maksimzotov.news.domain.entities.NewsWrapper
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import retrofit2.Response
@@ -11,7 +11,7 @@ class GetNewsUseCase @Inject constructor(
     private val repository: Repository,
     private val coroutineDispatcher: CoroutineDispatcher
 ) {
-    suspend fun getNews(): Response<List<NewsItem>> = withContext(coroutineDispatcher) {
+    suspend fun getNews(): Response<NewsWrapper> = withContext(coroutineDispatcher) {
         repository.getNews()
     }
 }

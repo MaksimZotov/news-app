@@ -4,6 +4,7 @@ import com.maksimzotov.news.data.main.retrofit.NewsApi
 import com.maksimzotov.news.data.main.room.MainDao
 import com.maksimzotov.news.domain.Repository
 import com.maksimzotov.news.domain.entities.NewsItem
+import com.maksimzotov.news.domain.entities.NewsWrapper
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 import javax.inject.Inject
@@ -15,7 +16,7 @@ class RepositoryImpl @Inject constructor(
     private val newsApi: NewsApi
 ) : Repository {
 
-    override suspend fun getNews(): Response<List<NewsItem>> =
+    override suspend fun getNews(): Response<NewsWrapper> =
         newsApi.getNews()
 
 

@@ -19,18 +19,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberImagePainter
-
-data class NewsItemStub(
-    val author: String,
-    val body: String,
-    val url: String
-)
+import com.maksimzotov.news.domain.entities.NewsItem
 
 @Composable
 fun Home(viewModel: HomeViewModel) {
-    val news by viewModel.newsStub.observeAsState(listOf())
+    val news by viewModel.news.observeAsState()
 
     Column {
         Button(onClick = { viewModel.getNews() }) {
@@ -39,25 +33,27 @@ fun Home(viewModel: HomeViewModel) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        LazyColumn {
-            items(news) { newsItemStub ->
-                NewsItemStub(
-                    newsItemStub
-                )
+        if (news?.isSuccessful == true) {
+            val newsWrapper = news!!.body()
+            if (newsWrapper != null) {
+                val newsList = newsWrapper.news
+                LazyColumn {
+                    items(newsList) { newsItem ->
+                        NewsItem(newsItem)
+                    }
+                }
             }
         }
     }
 }
 
 @Composable
-fun NewsItemStub(
-    newsStub: NewsItemStub
-) {
+fun NewsItem(newsItem: NewsItem) {
     Surface {
         Row(modifier = Modifier.padding(all = 8.dp)) {
             Image(
                 painter = rememberImagePainter(
-                    data = newsStub.url,
+                    data = newsItem.urlToImage,
                     builder = {
                         crossfade(true)
                         crossfade(1000)
@@ -80,14 +76,6 @@ fun NewsItemStub(
             Column(modifier = Modifier.clickable {
                 isExpanded = !isExpanded
             }) {
-                Text(
-                    text = newsStub.author,
-                    color = MaterialTheme.colors.secondaryVariant,
-                    style = MaterialTheme.typography.subtitle2
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
                 Surface(
                     shape = MaterialTheme.shapes.medium,
                     elevation = 1.dp,
@@ -97,7 +85,7 @@ fun NewsItemStub(
                         .padding(1.dp)
                 ) {
                     Text(
-                        text = newsStub.body,
+                        text = newsItem.title,
                         modifier = Modifier.padding(all = 4.dp),
                         maxLines = if (isExpanded) Int.MAX_VALUE else 1,
                         style = MaterialTheme.typography.body2

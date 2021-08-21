@@ -9,7 +9,7 @@ import com.maksimzotov.news.data.main.retrofit.deserializers.NewsDeserializer
 import com.maksimzotov.news.data.main.room.MainDao
 import com.maksimzotov.news.data.main.room.MainDatabase
 import com.maksimzotov.news.data.main.room.RoomConstants
-import com.maksimzotov.news.domain.entities.NewsItem
+import com.maksimzotov.news.domain.entities.NewsWrapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -57,7 +57,7 @@ class MainModule {
         newsDeserializer: NewsDeserializer
     ): Retrofit {
         val gsonBuilder = GsonBuilder()
-        gsonBuilder.registerTypeAdapter(NewsItem::class.java, newsDeserializer)
+        gsonBuilder.registerTypeAdapter(NewsWrapper::class.java, newsDeserializer)
         val myGson = gsonBuilder.create()
         val converterFactory = GsonConverterFactory.create(myGson)
 
