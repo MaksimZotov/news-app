@@ -8,6 +8,7 @@ import com.maksimzotov.news.data.android.AndroidSettingsDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -25,7 +26,9 @@ class AndroidModule {
 
     @Provides
     @Singleton
-    fun provideAndroidSettingsDatabase(context: Context): AndroidSettingsDatabase {
+    fun provideAndroidSettingsDatabase(
+        @ApplicationContext context: Context
+    ): AndroidSettingsDatabase {
         return Room.databaseBuilder(
             context.applicationContext,
             AndroidSettingsDatabase::class.java,

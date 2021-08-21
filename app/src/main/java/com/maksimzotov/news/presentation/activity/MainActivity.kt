@@ -6,42 +6,55 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.maksimzotov.news.R
 import com.maksimzotov.news.presentation.entities.NavigationItem
 import com.maksimzotov.news.presentation.screens.favorites.Favorites
 import com.maksimzotov.news.presentation.screens.favorites.FavoritesViewModel
 import com.maksimzotov.news.presentation.screens.home.Home
 import com.maksimzotov.news.presentation.screens.home.HomeViewModel
 import com.maksimzotov.news.presentation.screens.info.Info
-import com.maksimzotov.news.presentation.screens.info.InfoViewModel
 import com.maksimzotov.news.presentation.theme.NewsTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    private val viewModel: MainActivityViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            NewsTheme {
-                Activity()
+            val darkTheme by viewModel.darkTheme.observeAsState()
+            val darkThemeIsAble = darkTheme?.isAble == true
+            NewsTheme(
+                darkTheme = darkThemeIsAble
+            ) {
+                Activity(viewModel)
             }
         }
     }
 }
 
 @Composable
-fun Activity() {
+fun Activity(viewModel: MainActivityViewModel) {
     Surface(color = MaterialTheme.colors.background) {
         val navController = rememberNavController()
+
         val bottomItems = listOf(
             NavigationItem.Home,
             NavigationItem.Favorites,
@@ -49,6 +62,20 @@ fun Activity() {
         )
         
         Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text(text = "News App") },
+                    actions = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_baseline_brightness_3_24),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .padding(end = 8.dp)
+                                .clickable { viewModel.changeTheme() }
+                        )
+                    }
+                )
+            },
             bottomBar = {
                 BottomNavigation {
                     bottomItems.forEach { item ->
@@ -65,13 +92,7 @@ fun Activity() {
                         )
                     }
                 }
-            },
-            topBar = {
-                TopAppBar(
-                    title = { Text(text = "News App") }
-                )
             }
-
         ) {
             NavHost(
                 navController = navController,
@@ -93,14 +114,6 @@ fun Activity() {
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun Preview() {
-    NewsTheme {
-        Activity()
     }
 }
 
