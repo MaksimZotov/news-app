@@ -61,6 +61,8 @@ fun Activity(viewModel: MainActivityViewModel) {
             NavigationItem.Favorites,
             NavigationItem.Info
         )
+
+        val bottomBarHeight = 56.dp
         
         Scaffold(
             topBar = {
@@ -79,7 +81,7 @@ fun Activity(viewModel: MainActivityViewModel) {
             },
             bottomBar = {
                 BottomNavigation(
-                    modifier = Modifier.height(56.dp)
+                    modifier = Modifier.height(bottomBarHeight)
                 ){
                     bottomItems.forEach { item ->
                         BottomNavigationItem(
@@ -91,8 +93,7 @@ fun Activity(viewModel: MainActivityViewModel) {
                                     painter = painterResource(id = item.icon),
                                     contentDescription = null
                                 )
-                            },
-                            alwaysShowLabel = true
+                            }
                         )
                     }
                 }
@@ -104,13 +105,13 @@ fun Activity(viewModel: MainActivityViewModel) {
             ) {
                 composable(NavigationItem.Home.route) {
                     val homeViewModel: HomeViewModel = hiltViewModel()
-                    Home(homeViewModel, navController)
+                    Home(homeViewModel, navController, bottomBarHeight)
                 }
                 composable(NavigationItem.Favorites.route) {
                     val favoritesViewModel: FavoritesViewModel = hiltViewModel()
-                    Favorites(favoritesViewModel, navController)
+                    Favorites(favoritesViewModel, navController, bottomBarHeight)
                 }
-                composable(NavigationItem.Info.route) { Info() }
+                composable(NavigationItem.Info.route) { Info(bottomBarHeight) }
                 composable("web_page") {
                     navController.previousBackStackEntry?.arguments?.getString("url")?.let {
                         WebPageScreen(it)

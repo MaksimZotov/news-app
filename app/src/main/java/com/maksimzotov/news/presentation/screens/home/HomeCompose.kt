@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel
@@ -28,7 +29,8 @@ import com.maksimzotov.news.presentation.screens.favorites.FavoritesViewModel
 @Composable
 fun Home(
     viewModel: HomeViewModel,
-    navController: NavController
+    navController: NavController,
+    bottomBarHeight: Dp
 ) {
     val news by viewModel.news.observeAsState()
 
@@ -40,7 +42,7 @@ fun Home(
                 text = { Text("Update")}
             )
         },
-        modifier = Modifier.padding(bottom = 56.dp)
+        modifier = Modifier.padding(bottom = bottomBarHeight)
     ) {
         if (news?.isSuccessful == true) {
             val newsWrapper = news!!.body()
