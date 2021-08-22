@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.navigation.NavController
@@ -17,12 +17,12 @@ fun FavoritesCompose(
     navController: NavController,
     bottomBarHeight: Dp
 ) {
-    val favorites by viewModel.favorites.observeAsState()
-    if (favorites != null) {
+    val favorites by viewModel.favorites.collectAsState(null)
+    favorites?.let { favorites ->
         LazyColumn(
             modifier = Modifier.padding(bottom = bottomBarHeight)
         ) {
-            items(favorites!!) { newsItem ->
+            items(favorites) { newsItem ->
                 NewsItemCompose(
                     newsItem,
                     viewModel,

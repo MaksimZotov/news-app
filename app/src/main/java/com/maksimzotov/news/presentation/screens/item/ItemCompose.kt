@@ -11,7 +11,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -107,7 +106,7 @@ fun NewsItemCompose(
             ) {
                 val text = when (viewModel) {
                     is HomeViewModel -> {
-                        val favorites by viewModel.favorites.observeAsState()
+                        val favorites by viewModel.favorites.collectAsState(null)
                         if (favorites?.contains(newsItem) == true) {
                             stringResource(R.string.added)
                         } else {

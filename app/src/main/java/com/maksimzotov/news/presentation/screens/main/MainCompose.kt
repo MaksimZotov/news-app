@@ -28,7 +28,10 @@ import com.maksimzotov.news.presentation.screens.info.InfoCompose
 import com.maksimzotov.news.presentation.screens.web.WebPageCompose
 
 @Composable
-fun MainCompose(viewModel: MainActivityViewModel) {
+fun MainCompose(
+    viewModel: MainActivityViewModel,
+    darkThemeIsAble: Boolean
+) {
     Surface(color = MaterialTheme.colors.background) {
         val navController = rememberNavController()
 
@@ -50,7 +53,7 @@ fun MainCompose(viewModel: MainActivityViewModel) {
                             contentDescription = stringResource(R.string.top_bar_title),
                             modifier = Modifier
                                 .padding(end = 8.dp)
-                                .clickable { viewModel.changeTheme() }
+                                .clickable { viewModel.changeTheme(!darkThemeIsAble) }
                         )
                     }
                 )

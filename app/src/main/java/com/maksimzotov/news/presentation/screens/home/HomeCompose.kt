@@ -10,8 +10,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
@@ -25,7 +23,7 @@ fun HomeCompose(
     navController: NavController,
     bottomBarHeight: Dp
 ) {
-    val news by viewModel.news.observeAsState()
+    val news = viewModel.news.value
 
     Scaffold(
         floatingActionButton = {
@@ -38,7 +36,7 @@ fun HomeCompose(
         modifier = Modifier.padding(bottom = bottomBarHeight)
     ) {
         if (news?.isSuccessful == true) {
-            val newsWrapper = news!!.body()
+            val newsWrapper = news.body()
             if (newsWrapper != null) {
                 val newsList = newsWrapper.news
                 LazyColumn() {
