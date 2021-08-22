@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -34,14 +37,16 @@ fun MainCompose(
 ) {
     Surface(color = MaterialTheme.colors.background) {
         val navController = rememberNavController()
+        val bottomBarHeight = 56.dp
+
+        var urlToWebPage by rememberSaveable { mutableStateOf("")}
+        val setUrlToWebPage: (String) -> Unit = { url -> urlToWebPage = url}
 
         val bottomItems = listOf(
             NavigationItem.Home,
             NavigationItem.Favorites,
             NavigationItem.Info
         )
-
-        val bottomBarHeight = 56.dp
 
         Scaffold(
             topBar = {
@@ -76,18 +81,12 @@ fun MainCompose(
                             alwaysShowLabel = true,
                             onClick = {
                                 navController.navigate(item.route) {
-                                    // Pop up to the start destination of the graph to
-                                    // avoid building up a large stack of destinations
-                                    // on the back stack as users select items
                                     navController.graph.startDestinationRoute?.let { route ->
                                         popUpTo(route) {
                                             saveState = true
                                         }
                                     }
-                                    // Avoid multiple copies of the same destination when
-                                    // reselecting the same item
                                     launchSingleTop = true
-                                    // Restore state when reselecting a previously selected item
                                     restoreState = true
                                 }
                             },
@@ -110,32 +109,31 @@ fun MainCompose(
                 composable(NavigationItem.Home.route) {
                     val homeViewModel: HomeViewModel = hiltViewModel()
                     HomeCompose(
-                        viewModel = homeViewModel,
-                        navController = navController,
-                        bottomBarHeight = bottomBarHeight)
+                        homeViewModel,
+                        navController,
+                        bottomBarHeight,
+                        setUrlToWebPage
+                    )
                 }
                 composable(NavigationItem.Favorites.route) {
                     val favoritesViewModel: FavoritesViewModel = hiltViewModel()
                     FavoritesCompose(
-                        viewModel = favoritesViewModel,
-                        navController = navController,
-                        bottomBarHeight = bottomBarHeight)
+                        favoritesViewModel,
+                        navController,
+                        bottomBarHeight,
+                        setUrlToWebPage
+                    )
                 }
                 composable(NavigationItem.Info.route) {
                     InfoCompose(
-                        bottomBarHeight = bottomBarHeight
+                        bottomBarHeight
                     )
                 }
                 composable(UIConstants.WEB_PAGE_ROUTE) {
-                    navController
-                        .previousBackStackEntry
-                        ?.arguments
-                        ?.getString(UIConstants.URL_KEY)?.let {
-                            WebPageCompose(
-                                urlToRender = it,
-                                bottomBarHeight = bottomBarHeight
-                            )
-                        }
+                    WebPageCompose(
+                        urlToWebPage,
+                        bottomBarHeight
+                    )
                 }
             }
         }

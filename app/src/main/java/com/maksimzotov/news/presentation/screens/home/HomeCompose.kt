@@ -21,7 +21,8 @@ import com.maksimzotov.news.presentation.screens.item.NewsItemCompose
 fun HomeCompose(
     viewModel: HomeViewModel,
     navController: NavController,
-    bottomBarHeight: Dp
+    bottomBarHeight: Dp,
+    setUrlToWebPage: (url: String) -> Unit
 ) {
     val news = viewModel.news.value
 
@@ -44,7 +45,8 @@ fun HomeCompose(
                         NewsItemCompose(
                             newsItem,
                             viewModel,
-                            navController
+                            navController,
+                            setUrlToWebPage
                         )
                     }
                 }

@@ -31,19 +31,15 @@ import com.maksimzotov.news.presentation.screens.home.HomeViewModel
 fun NewsItemCompose(
     newsItem: NewsItem,
     viewModel: ViewModel,
-    navController: NavController
+    navController: NavController,
+    setUrlToWebPage: (url: String) -> Unit
 ) {
     Surface(
         modifier = Modifier
             .padding(6.dp)
             .clickable {
-                navController.also { nc ->
-                    nc.currentBackStackEntry?.arguments =
-                        (nc.currentBackStackEntry?.arguments ?: bundleOf()).apply {
-                            putAll(bundleOf(UIConstants.URL_KEY to newsItem.url))
-                        }
-                    nc.navigate(UIConstants.WEB_PAGE_ROUTE)
-                }
+                setUrlToWebPage(newsItem.url)
+                navController.navigate(UIConstants.WEB_PAGE_ROUTE)
             }
             .border(1.dp, MaterialTheme.colors.primary, MaterialTheme.shapes.small)
     ) {

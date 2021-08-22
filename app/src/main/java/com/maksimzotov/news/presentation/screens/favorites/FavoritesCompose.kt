@@ -15,7 +15,8 @@ import com.maksimzotov.news.presentation.screens.item.NewsItemCompose
 fun FavoritesCompose(
     viewModel: FavoritesViewModel,
     navController: NavController,
-    bottomBarHeight: Dp
+    bottomBarHeight: Dp,
+    setUrlToWebPage: (url: String) -> Unit
 ) {
     val favorites by viewModel.favorites.collectAsState(null)
     favorites?.let { favorites ->
@@ -26,7 +27,8 @@ fun FavoritesCompose(
                 NewsItemCompose(
                     newsItem,
                     viewModel,
-                    navController
+                    navController,
+                    setUrlToWebPage
                 )
             }
         }
