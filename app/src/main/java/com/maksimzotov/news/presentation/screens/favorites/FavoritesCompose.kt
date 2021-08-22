@@ -29,7 +29,7 @@ fun FavoritesCompose(
                     newsItem,
                     viewModel,
                     navController,
-                    UIConstants.WEB_PAGE_FROM_FAVORITES_ROUTE,
+                    UIConstants.WEB_FAVORITES,
                     setUrlToWebPage
                 )
             }

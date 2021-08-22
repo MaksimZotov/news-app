@@ -47,7 +47,7 @@ fun HomeCompose(
                             newsItem,
                             viewModel,
                             navController,
-                            UIConstants.WEB_PAGE_FROM_HOME_ROUTE,
+                            UIConstants.WEB_HOME,
                             setUrlToWebPage
                         )
                     }

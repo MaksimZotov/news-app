@@ -15,6 +15,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -22,7 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.maksimzotov.news.R
 import com.maksimzotov.news.presentation.UIConstants
 import com.maksimzotov.news.presentation.activity.MainActivityViewModel
-import com.maksimzotov.news.presentation.entities.NavigationItem
+import com.maksimzotov.news.presentation.entities.NavItem
 import com.maksimzotov.news.presentation.screens.favorites.FavoritesCompose
 import com.maksimzotov.news.presentation.screens.favorites.FavoritesViewModel
 import com.maksimzotov.news.presentation.screens.home.HomeCompose
@@ -39,13 +41,18 @@ fun MainCompose(
         val navController = rememberNavController()
         val bottomBarHeight = 56.dp
 
-        var urlToWebPage by rememberSaveable { mutableStateOf("")}
-        val setUrlToWebPage: (String) -> Unit = { url -> urlToWebPage = url}
+        var urlToWebPageFromHome by rememberSaveable { mutableStateOf("") }
+        val setUrlToWebPageFromHome: (String) -> Unit = { url -> urlToWebPageFromHome = url }
+
+        var urlToWebPageFromFavorites by rememberSaveable { mutableStateOf("") }
+        val setUrlToWebPageFromFavorites: (String) -> Unit = {
+                url -> urlToWebPageFromFavorites = url
+        }
 
         val bottomItems = listOf(
-            NavigationItem.Home,
-            NavigationItem.Favorites,
-            NavigationItem.Info
+            NavItem.Home,
+            NavItem.Favorites,
+            NavItem.Info
         )
 
         Scaffold(
@@ -74,11 +81,11 @@ fun MainCompose(
                             selected =
                                 currentRoute == selectedItem.route ||
 
-                                    currentRoute == UIConstants.WEB_PAGE_FROM_HOME_ROUTE &&
+                                    currentRoute == UIConstants.WEB_HOME &&
                                     navController.previousBackStackEntry?.destination?.route ==
                                     selectedItem.route ||
 
-                                    currentRoute == UIConstants.WEB_PAGE_FROM_FAVORITES_ROUTE &&
+                                    currentRoute == UIConstants.WEB_FAVORITES &&
                                     navController.previousBackStackEntry?.destination?.route ==
                                     selectedItem.route,
 
@@ -86,70 +93,79 @@ fun MainCompose(
                             unselectedContentColor = Color.White.copy(0.75f),
                             alwaysShowLabel = true,
                             onClick = {
-                                val backQueue = navController.backQueue
-                                if (selectedItem == NavigationItem.Home) {
-                                    if (currentRoute !in listOf(
-                                            NavigationItem.Favorites.route,
-                                            NavigationItem.Info.route
-                                        )) {
-                                        navController.popBackStack(
-                                            NavigationItem.Home.route,
-                                            false
-                                        )
-                                    } else {
-                                        val lastEntry = backQueue.last {
-                                            it.destination.route !in listOf(
-                                                NavigationItem.Favorites.route,
-                                                NavigationItem.Info.route
-                                            )
+                                val nc = navController
+                                val backQueue = nc.backQueue
+                                when (currentRoute) {
+                                    NavItem.Home.route -> when(selectedItem) {
+                                        NavItem.Favorites -> {
+                                            if (backQueue.contains(UIConstants.WEB_FAVORITES))
+                                                nc.popBackStack(UIConstants.WEB_FAVORITES)
+                                            else
+                                                nc.navigate(NavItem.Favorites.route)
                                         }
-                                        lastEntry.destination.route?.let { route ->
-                                            navController.popBackStack(
-                                                route,
-                                                false
-                                            )
+                                        NavItem.Info -> {
+                                            nc.navigate(NavItem.Info.route)
                                         }
                                     }
-                                } else if (selectedItem == NavigationItem.Favorites) {
-                                    if (currentRoute == NavigationItem.Home.route &&
-                                        !backQueue.any {
-                                            it.destination.route == NavigationItem.Favorites.route
+                                    NavItem.Favorites.route -> when(selectedItem) {
+                                        NavItem.Home -> {
+                                            if (backQueue.contains(UIConstants.WEB_HOME))
+                                                nc.popBackStack(UIConstants.WEB_HOME)
+                                            else
+                                                nc.popBackStack(NavItem.Home.route)
                                         }
-                                    ) {
-                                        navController.navigate(NavigationItem.Favorites.route)
-                                    } else if (
-                                        currentRoute == UIConstants.WEB_PAGE_FROM_HOME_ROUTE
-                                    ) {
-                                        navController.navigate(NavigationItem.Favorites.route)
-                                    } else {
-                                        val lastEntry = backQueue.last {
-                                            it.destination.route !in listOf(
-                                                NavigationItem.Home.route,
-                                                NavigationItem.Info.route
-                                            )
-                                        }
-                                        lastEntry.destination.route?.let { route ->
-                                            navController.popBackStack(
-                                                route,
-                                                false
-                                            )
+                                        NavItem.Info -> {
+                                            if (backQueue.contains(NavItem.Info.route))
+                                                nc.popBackStack(NavItem.Info.route)
+                                            else
+                                                nc.navigate(NavItem.Info.route)
                                         }
                                     }
-                                } else {
-                                    val nextRoute =
-                                        if (selectedItem == NavigationItem.Info &&
-                                            currentRoute != NavigationItem.Info.route) {
-                                            NavigationItem.Info.route
-                                        } else {
-                                            null
+                                    NavItem.Info.route -> when(selectedItem) {
+                                        NavItem.Home -> {
+                                            if (backQueue.contains(UIConstants.WEB_HOME))
+                                                nc.popBackStack(UIConstants.WEB_HOME)
+                                            else
+                                                nc.popBackStack(NavItem.Home.route)
                                         }
-                                    if (nextRoute != null) {
-                                        if (backQueue.any {it.destination.route == nextRoute}) {
-                                            navController.popBackStack()
-                                            navController.popBackStack()
-                                            navController.navigate(currentRoute!!)
+                                        NavItem.Favorites -> {
+                                            if (backQueue.contains(UIConstants.WEB_FAVORITES))
+                                                nc.popBackStack(UIConstants.WEB_FAVORITES)
+                                            else {
+                                                if (backQueue.contains(NavItem.Favorites.route))
+                                                    nc.popBackStack(NavItem.Favorites.route)
+                                                else
+                                                    nc.navigate(NavItem.Favorites.route)
+                                            }
                                         }
-                                        navController.navigate(nextRoute)
+                                    }
+                                    UIConstants.WEB_HOME -> when(selectedItem) {
+                                        NavItem.Home -> {
+                                            nc.popBackStack(NavItem.Home.route)
+                                        }
+                                        NavItem.Favorites -> {
+                                            if (backQueue.contains(UIConstants.WEB_FAVORITES))
+                                                nc.popBackStack(UIConstants.WEB_FAVORITES)
+                                            else
+                                                nc.navigate(NavItem.Favorites.route)
+                                        }
+                                        NavItem.Info -> {
+                                            nc.navigate(NavItem.Info.route)
+                                        }
+                                    }
+                                    UIConstants.WEB_FAVORITES -> when(selectedItem) {
+                                        NavItem.Home -> {
+                                            if (backQueue.contains(UIConstants.WEB_HOME))
+                                                nc.popBackStack(UIConstants.WEB_HOME)
+                                            else
+                                                nc.popBackStack(NavItem.Home.route)
+                                        }
+                                        NavItem.Favorites -> {
+                                            nc.popBackStack(NavItem.Favorites.route)
+                                        }
+                                        NavItem.Info -> {
+                                            nc.navigate(NavItem.Info.route)
+                                        }
                                     }
                                 }
                             },
@@ -167,40 +183,40 @@ fun MainCompose(
         ) {
             NavHost(
                 navController = navController,
-                startDestination = NavigationItem.Home.route
+                startDestination = NavItem.Home.route
             ) {
-                composable(NavigationItem.Home.route) {
+                composable(NavItem.Home.route) {
                     val homeViewModel: HomeViewModel = hiltViewModel()
                     HomeCompose(
                         homeViewModel,
                         navController,
                         bottomBarHeight,
-                        setUrlToWebPage
+                        setUrlToWebPageFromHome
                     )
                 }
-                composable(NavigationItem.Favorites.route) {
+                composable(NavItem.Favorites.route) {
                     val favoritesViewModel: FavoritesViewModel = hiltViewModel()
                     FavoritesCompose(
                         favoritesViewModel,
                         navController,
                         bottomBarHeight,
-                        setUrlToWebPage
+                        setUrlToWebPageFromFavorites
                     )
                 }
-                composable(NavigationItem.Info.route) {
+                composable(NavItem.Info.route) {
                     InfoCompose(
                         bottomBarHeight
                     )
                 }
-                composable(UIConstants.WEB_PAGE_FROM_HOME_ROUTE) {
+                composable(UIConstants.WEB_HOME) {
                     WebPageCompose(
-                        urlToWebPage,
+                        urlToWebPageFromHome,
                         bottomBarHeight
                     )
                 }
-                composable(UIConstants.WEB_PAGE_FROM_FAVORITES_ROUTE) {
+                composable(UIConstants.WEB_FAVORITES) {
                     WebPageCompose(
-                        urlToWebPage,
+                        urlToWebPageFromFavorites,
                         bottomBarHeight
                     )
                 }
