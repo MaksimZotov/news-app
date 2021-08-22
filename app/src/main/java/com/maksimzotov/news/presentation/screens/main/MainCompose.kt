@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
@@ -42,11 +43,11 @@ fun MainCompose(viewModel: MainActivityViewModel) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(text = "News App") },
+                    title = { Text(stringResource(R.string.app_name)) },
                     actions = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_baseline_brightness_3_24),
-                            contentDescription = null,
+                            contentDescription = stringResource(R.string.top_bar_title),
                             modifier = Modifier
                                 .padding(end = 8.dp)
                                 .clickable { viewModel.changeTheme() }
@@ -87,7 +88,7 @@ fun MainCompose(viewModel: MainActivityViewModel) {
                                     restoreState = true
                                 }
                             },
-                            label = { Text(item.title) },
+                            label = { Text(stringResource(item.title)) },
                             icon = {
                                 Icon(
                                     painter = painterResource(id = item.icon),

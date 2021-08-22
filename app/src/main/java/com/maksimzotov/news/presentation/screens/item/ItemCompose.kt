@@ -16,11 +16,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
+import com.maksimzotov.news.R
 import com.maksimzotov.news.domain.entities.NewsItem
 import com.maksimzotov.news.presentation.UIConstants
 import com.maksimzotov.news.presentation.screens.favorites.FavoritesViewModel
@@ -60,7 +62,7 @@ fun NewsItemCompose(
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .fillMaxWidth(1f)
+                    .fillMaxWidth()
                     .height(152.dp)
                     .border(1.5.dp, MaterialTheme.colors.secondary, MaterialTheme.shapes.large)
 
@@ -107,13 +109,13 @@ fun NewsItemCompose(
                     is HomeViewModel -> {
                         val favorites by viewModel.favorites.observeAsState()
                         if (favorites?.contains(newsItem) == true) {
-                            "Added"
+                            stringResource(R.string.added)
                         } else {
-                            "Add"
+                            stringResource(R.string.add)
                         }
                     }
-                    is FavoritesViewModel -> "Remove"
-                    else -> "Oops!"
+                    is FavoritesViewModel -> stringResource(R.string.remove)
+                    else -> stringResource(R.string.oops)
                 }
                 Text(text)
             }

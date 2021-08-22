@@ -13,8 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.navigation.NavController
+import com.maksimzotov.news.R
 import com.maksimzotov.news.presentation.screens.item.NewsItemCompose
 
 @Composable
@@ -30,7 +32,7 @@ fun HomeCompose(
             ExtendedFloatingActionButton(
                 icon = { Icon(Icons.Filled.Refresh, null) },
                 onClick = { viewModel.getNews() },
-                text = { Text("Update")}
+                text = { Text(stringResource(R.string.update))}
             )
         },
         modifier = Modifier.padding(bottom = bottomBarHeight)

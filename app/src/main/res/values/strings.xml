@@ -1,3 +1,13 @@
 <resources>
-    <string name="app_name">News</string>
+    <string name="app_name">Новости</string>
+    <string name="top_bar_title">Заголовок</string>
+    <string name="add">Добавить</string>
+    <string name="added">Добавлена</string>
+    <string name="remove">Удалить</string>
+    <string name="oops">Упс!</string>
+    <string name="some_info">Некоторая информация</string>
+    <string name="update">Обновить</string>
+    <string name="home">Главная</string>
+    <string name="favorites">Избранное</string>
+    <string name="info">О приложении</string>
 </resources>
