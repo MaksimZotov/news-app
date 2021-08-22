@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.navigation.NavController
 import com.maksimzotov.news.R
+import com.maksimzotov.news.presentation.UIConstants
 import com.maksimzotov.news.presentation.screens.item.NewsItemCompose
 
 @Composable
@@ -46,6 +47,7 @@ fun HomeCompose(
                             newsItem,
                             viewModel,
                             navController,
+                            UIConstants.WEB_PAGE_FROM_HOME_ROUTE,
                             setUrlToWebPage
                         )
                     }

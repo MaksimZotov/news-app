@@ -17,13 +17,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.maksimzotov.news.R
 import com.maksimzotov.news.domain.entities.NewsItem
-import com.maksimzotov.news.presentation.UIConstants
 import com.maksimzotov.news.presentation.screens.favorites.FavoritesViewModel
 import com.maksimzotov.news.presentation.screens.home.HomeViewModel
 
@@ -32,6 +30,7 @@ fun NewsItemCompose(
     newsItem: NewsItem,
     viewModel: ViewModel,
     navController: NavController,
+    webPageRoute: String,
     setUrlToWebPage: (url: String) -> Unit
 ) {
     Surface(
@@ -39,7 +38,7 @@ fun NewsItemCompose(
             .padding(6.dp)
             .clickable {
                 setUrlToWebPage(newsItem.url)
-                navController.navigate(UIConstants.WEB_PAGE_ROUTE)
+                navController.navigate(webPageRoute)
             }
             .border(1.dp, MaterialTheme.colors.primary, MaterialTheme.shapes.small)
     ) {

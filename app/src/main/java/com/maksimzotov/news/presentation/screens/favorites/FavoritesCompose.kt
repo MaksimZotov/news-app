@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.navigation.NavController
+import com.maksimzotov.news.presentation.UIConstants
 import com.maksimzotov.news.presentation.screens.item.NewsItemCompose
 
 @Composable
@@ -28,6 +29,7 @@ fun FavoritesCompose(
                     newsItem,
                     viewModel,
                     navController,
+                    UIConstants.WEB_PAGE_FROM_FAVORITES_ROUTE,
                     setUrlToWebPage
                 )
             }

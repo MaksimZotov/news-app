@@ -67,33 +67,96 @@ fun MainCompose(
                 BottomNavigation(
                     modifier = Modifier.height(bottomBarHeight)
                 ){
-                    val navBackStackEntry by navController.currentBackStackEntryAsState()
-                    val currentRoute = navBackStackEntry?.destination?.route
-                    bottomItems.forEach { item ->
+                    val curNavBackStackEntry by navController.currentBackStackEntryAsState()
+                    val currentRoute = curNavBackStackEntry?.destination?.route
+                    bottomItems.forEach { selectedItem ->
                         BottomNavigationItem(
-                            selected = (
-                                    currentRoute == item.route ||
-                                            currentRoute == UIConstants.WEB_PAGE_ROUTE &&
-                                            item == NavigationItem.Home
-                                    ),
+                            selected =
+                                currentRoute == selectedItem.route ||
+
+                                    currentRoute == UIConstants.WEB_PAGE_FROM_HOME_ROUTE &&
+                                    navController.previousBackStackEntry?.destination?.route ==
+                                    selectedItem.route ||
+
+                                    currentRoute == UIConstants.WEB_PAGE_FROM_FAVORITES_ROUTE &&
+                                    navController.previousBackStackEntry?.destination?.route ==
+                                    selectedItem.route,
+
                             selectedContentColor = Color.White,
                             unselectedContentColor = Color.White.copy(0.75f),
                             alwaysShowLabel = true,
                             onClick = {
-                                navController.navigate(item.route) {
-                                    navController.graph.startDestinationRoute?.let { route ->
-                                        popUpTo(route) {
-                                            saveState = true
+                                val backQueue = navController.backQueue
+                                if (selectedItem == NavigationItem.Home) {
+                                    if (currentRoute !in listOf(
+                                            NavigationItem.Favorites.route,
+                                            NavigationItem.Info.route
+                                        )) {
+                                        navController.popBackStack(
+                                            NavigationItem.Home.route,
+                                            false
+                                        )
+                                    } else {
+                                        val lastEntry = backQueue.last {
+                                            it.destination.route !in listOf(
+                                                NavigationItem.Favorites.route,
+                                                NavigationItem.Info.route
+                                            )
+                                        }
+                                        lastEntry.destination.route?.let { route ->
+                                            navController.popBackStack(
+                                                route,
+                                                false
+                                            )
                                         }
                                     }
-                                    launchSingleTop = true
-                                    restoreState = true
+                                } else if (selectedItem == NavigationItem.Favorites) {
+                                    if (currentRoute == NavigationItem.Home.route &&
+                                        !backQueue.any {
+                                            it.destination.route == NavigationItem.Favorites.route
+                                        }
+                                    ) {
+                                        navController.navigate(NavigationItem.Favorites.route)
+                                    } else if (
+                                        currentRoute == UIConstants.WEB_PAGE_FROM_HOME_ROUTE
+                                    ) {
+                                        navController.navigate(NavigationItem.Favorites.route)
+                                    } else {
+                                        val lastEntry = backQueue.last {
+                                            it.destination.route !in listOf(
+                                                NavigationItem.Home.route,
+                                                NavigationItem.Info.route
+                                            )
+                                        }
+                                        lastEntry.destination.route?.let { route ->
+                                            navController.popBackStack(
+                                                route,
+                                                false
+                                            )
+                                        }
+                                    }
+                                } else {
+                                    val nextRoute =
+                                        if (selectedItem == NavigationItem.Info &&
+                                            currentRoute != NavigationItem.Info.route) {
+                                            NavigationItem.Info.route
+                                        } else {
+                                            null
+                                        }
+                                    if (nextRoute != null) {
+                                        if (backQueue.any {it.destination.route == nextRoute}) {
+                                            navController.popBackStack()
+                                            navController.popBackStack()
+                                            navController.navigate(currentRoute!!)
+                                        }
+                                        navController.navigate(nextRoute)
+                                    }
                                 }
                             },
-                            label = { Text(stringResource(item.title)) },
+                            label = { Text(stringResource(selectedItem.title)) },
                             icon = {
                                 Icon(
-                                    painter = painterResource(id = item.icon),
+                                    painter = painterResource(id = selectedItem.icon),
                                     contentDescription = null
                                 )
                             }
@@ -129,7 +192,13 @@ fun MainCompose(
                         bottomBarHeight
                     )
                 }
-                composable(UIConstants.WEB_PAGE_ROUTE) {
+                composable(UIConstants.WEB_PAGE_FROM_HOME_ROUTE) {
+                    WebPageCompose(
+                        urlToWebPage,
+                        bottomBarHeight
+                    )
+                }
+                composable(UIConstants.WEB_PAGE_FROM_FAVORITES_ROUTE) {
                     WebPageCompose(
                         urlToWebPage,
                         bottomBarHeight
