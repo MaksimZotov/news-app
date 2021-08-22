@@ -15,12 +15,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.maksimzotov.news.R
 import com.maksimzotov.news.presentation.entities.NavigationItem
@@ -83,10 +85,34 @@ fun Activity(viewModel: MainActivityViewModel) {
                 BottomNavigation(
                     modifier = Modifier.height(bottomBarHeight)
                 ){
+                    val navBackStackEntry by navController.currentBackStackEntryAsState()
+                    val currentRoute = navBackStackEntry?.destination?.route
                     bottomItems.forEach { item ->
                         BottomNavigationItem(
-                            selected = false,
-                            onClick = { navController.navigate(item.route) },
+                            selected = (
+                                    currentRoute == item.route ||
+                                    currentRoute == "web_page" && item == NavigationItem.Home
+                            ),
+                            selectedContentColor = Color.White,
+                            unselectedContentColor = Color.White.copy(0.75f),
+                            alwaysShowLabel = true,
+                            onClick = {
+                                navController.navigate(item.route) {
+                                    // Pop up to the start destination of the graph to
+                                    // avoid building up a large stack of destinations
+                                    // on the back stack as users select items
+                                    navController.graph.startDestinationRoute?.let { route ->
+                                        popUpTo(route) {
+                                            saveState = true
+                                        }
+                                    }
+                                    // Avoid multiple copies of the same destination when
+                                    // reselecting the same item
+                                    launchSingleTop = true
+                                    // Restore state when reselecting a previously selected item
+                                    restoreState = true
+                                }
+                            },
                             label = { Text(item.title) },
                             icon = {
                                 Icon(
