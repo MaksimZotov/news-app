@@ -8,10 +8,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -33,18 +32,21 @@ fun Home(
 ) {
     val news by viewModel.news.observeAsState()
 
-    Column {
-        Button(onClick = { viewModel.getNews() }) {
-            Text(text = "Get News")
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
+    Scaffold(
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                icon = { Icon(Icons.Filled.Refresh, null) },
+                onClick = { viewModel.getNews() },
+                text = { Text("Update")}
+            )
+        },
+        modifier = Modifier.padding(bottom = 56.dp)
+    ) {
         if (news?.isSuccessful == true) {
             val newsWrapper = news!!.body()
             if (newsWrapper != null) {
                 val newsList = newsWrapper.news
-                LazyColumn {
+                LazyColumn() {
                     items(newsList) { newsItem ->
                         NewsItemCompose(
                             newsItem,

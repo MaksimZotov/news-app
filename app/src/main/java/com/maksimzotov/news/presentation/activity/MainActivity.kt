@@ -8,6 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -77,7 +78,9 @@ fun Activity(viewModel: MainActivityViewModel) {
                 )
             },
             bottomBar = {
-                BottomNavigation {
+                BottomNavigation(
+                    modifier = Modifier.height(56.dp)
+                ){
                     bottomItems.forEach { item ->
                         BottomNavigationItem(
                             selected = false,
@@ -88,7 +91,8 @@ fun Activity(viewModel: MainActivityViewModel) {
                                     painter = painterResource(id = item.icon),
                                     contentDescription = null
                                 )
-                            }
+                            },
+                            alwaysShowLabel = true
                         )
                     }
                 }
