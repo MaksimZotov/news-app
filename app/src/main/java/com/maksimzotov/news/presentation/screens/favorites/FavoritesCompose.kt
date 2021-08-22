@@ -9,10 +9,10 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.navigation.NavController
-import com.maksimzotov.news.presentation.screens.home.NewsItemCompose
+import com.maksimzotov.news.presentation.screens.item.NewsItemCompose
 
 @Composable
-fun Favorites(
+fun FavoritesCompose(
     viewModel: FavoritesViewModel,
     navController: NavController,
     bottomBarHeight: Dp

@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 
 @Composable
-fun Info(bottomBarHeight: Dp) {
+fun InfoCompose(bottomBarHeight: Dp) {
     Box(
         modifier = Modifier.fillMaxSize().padding(bottom = bottomBarHeight),
         contentAlignment = Alignment.Center
